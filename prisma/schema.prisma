@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               Int              @id @default(autoincrement())
+  name             String
+  email            String           @unique
+  sentRequests     ProjectRequest[] @relation("SentRequests")
+  receivedRequests ProjectRequest[] @relation("ReceivedRequests")
+}
+
+model Project {
+  id       Int              @id @default(autoincrement())
+  name     String
+  requests ProjectRequest[]
+}
+
+model ProjectRequest {
+  id          Int      @id @default(autoincrement())
+  projectId   Int
+  senderId    Int
+  receiverId  Int
+  type        String   // e.g., "JOIN"
+  status      String   // e.g., "PENDING", "ASSIGNED", "REJECTED"
+  description String
+  createdAt   DateTime @default(now())
+
+  // Relations
+  project    Project  @relation(fields: [projectId], references: [id])
+  sender     User     @relation("SentRequests", fields: [senderId], references: [id])
+  receiver   User     @relation("ReceivedRequests", fields: [receiverId], references: [id])
+}
