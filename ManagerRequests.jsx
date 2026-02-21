@@ -11,7 +11,7 @@ export default function ManagerRequests({ managerId }) {
 
     async function fetchRequests() {
       try {
-        const res = await fetch(`/api/team_request?managerId=${managerId}`);
+        const res = await fetch(`/api/team-request?managerId=${managerId}`); // ✅ FIXED
         const data = await res.json();
         setRequests(data);
       } catch (err) {
@@ -27,14 +27,14 @@ export default function ManagerRequests({ managerId }) {
   // Approve / Reject handler
   const handleUpdateStatus = async (requestId, status) => {
     try {
-      const res = await fetch("/api/team_request", {
+      const res = await fetch("/api/team-request", { // ✅ FIXED
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ requestId, status }),
       });
+
       const updated = await res.json();
 
-      // Update local state
       setRequests((prev) =>
         prev.map((req) => (req.id === updated.id ? updated : req))
       );
