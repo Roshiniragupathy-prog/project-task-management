@@ -32,22 +32,10 @@ export async function POST(req: Request) {
   }
 }
 
-
-export async function GET(req: Request) {
+export async function GET() {
   try {
-    const { searchParams } = new URL(req.url);
-    const managerId = searchParams.get("managerId");
-
-    if (!managerId) {
-      return NextResponse.json(
-        { error: "managerId is required" },
-        { status: 400 }
-      );
-    }
-
     const requests = await prisma.projectRequest.findMany({
       where: {
-        receiverId: parseInt(managerId),
         status: "PENDING",
       },
       include: {
@@ -59,10 +47,7 @@ export async function GET(req: Request) {
     return NextResponse.json(requests);
   } catch (error) {
     console.error("GET /api/team_request error:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch requests", details: error },
-      { status: 500 }
-    );
+    return NextResponse.json([], { status: 500 });
   }
 }
 
